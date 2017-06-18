@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from sklearn import linear_model
+from sklearn import linear_model,svm
+from sklearn.ensemble import GradientBoostingRegressor
 
 input_file = "train.csv"
 
@@ -36,7 +37,10 @@ def checking_columns(numpy_array):
 #Choosing only specific columns instead of everything. 
 features_array = [] #2,3,4,5,6,7,8,9
 features_array.extend(range(2,11))
-features_array.extend([13,15,16,19,22,23,25,31,31,85,86,87,88])
+features_array.extend([13,15,16,19,22,23,25,31,32])
+features_array.extend(range(42,106))
+features_array.extend(range(108,114))
+features_array.extend(range(120,150))
 features_array.append(291)
 print(features_array)
 
@@ -63,8 +67,10 @@ test_data = numpy_array_test[:,:]
 print(test_data.shape)
 
 #Regression model
-regr = linear_model.LinearRegression()
+#regr = linear_model.Lasso(alpha = 0.1)
+#regr = svm.SVR()
 #regr = linear_model.BayesianRidge()
+regr = GradientBoostingRegressor()
 regr.fit(train_data,train_preds)
 
 # learned coefficients

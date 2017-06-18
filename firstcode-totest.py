@@ -3,7 +3,12 @@
 
 import numpy as np
 import pandas as pd
-from sklearn import linear_model
+from sklearn import linear_model,svm
+
+#Add these:
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.ensemble import BaggingRegressor, AdaBoostRegressor, ExtraTreesRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 #Training and testing files
 input_file = "train.csv"
@@ -13,13 +18,17 @@ df = pd.read_csv(input_file, header = 0)
 
 #Gets the header for the file as a list
 original_headers = list(df.columns.values)
+print(df.columns.get_loc('cafe_sum_2000_min_price_avg'))
+print(df.columns.get_loc('cafe_sum_1500_min_price_avg'))
+print(df.columns.get_loc('cafe_sum_1000_min_price_avg'))
+print(df.columns.get_loc('cafe_sum_500_min_price_avg'))
 
 #replace NaN values with 0
-def removeNaNEtc(nparray):
+def removeNaNEtc(nparray):   
   nparray[np.isnan(nparray)] = 0
   return nparray
 
-#Just checking if there are columns with infinite values
+#Just checking if there are columns with infinite values - not being used anywhere now.
 def checking_columns(numpy_array):
   print("Columns with infinite vals")
   for i in range(0,6):
@@ -36,7 +45,12 @@ def checking_columns(numpy_array):
 #Choosing only specific columns instead of everything. 
 features_array = [] #2,3,4,5,6,7,8,9
 features_array.extend(range(2,11))
-#features_array.extend([13,15,16,19,22,23,25,31,31,85,86,87,88,291])
+features_array.extend(range(13,152))
+features_array.extend(range(153,270))
+#features_array.extend([13,15,16,19,22,23,25,31,32])
+#features_array.extend(range(42,106))
+#features_array.extend(range(108,114))
+#features_array.extend(range(120,150))
 features_array.append(291)
 print(features_array)
 
@@ -59,18 +73,23 @@ train_preds = numpy_array[0:30000,-1]
 test_preds = numpy_array[30001:,-1]
 
 #Exploring multiple models:
-for i in [linear_model.LinearRegression(), linear_model.Lasso(alpha = 0.1), linear_model.Lasso(alpha = 0.01), 
-linear_model.Lasso(alpha = 10), linear_model.Ridge(alpha = 0.1), linear_model.Ridge(alpha = 0.01), linear_model.Ridge(alpha = 10), 
-linear_model.BayesianRidge()]:
-   regr = i
+models = [linear_model.LinearRegression(), linear_model.Lasso(alpha = 0.1), linear_model.Lasso(alpha = 0.01), 
+linear_model.Lasso(alpha = 10), linear_model.Ridge(alpha = 0.1), linear_model.Ridge(alpha = 0.01), linear_model.Ridge(alpha = 10), GradientBoostingRegressor(),RandomForestRegressor(),DecisionTreeRegressor()]
+
+#linear_model.BayesianRidge(), linear_model.Lars(), svm.SVR()
+
+for model in models:
+   regr = model
    regr.fit(train_data,train_preds)
+   model_preds = regr.predict(test_data)
    # learned coefficients
    #print('Coefficients: \n', regr.coef_)
    # MSE
    #print("Mean squared error: %.2f" % np.mean((regr.predict(test_data) - test_preds) ** 2))
    n = len(test_preds)
-   print("****", i, "********")
-   print("RMSLE: ", np.sqrt((1/n) * sum(np.square(np.log10(regr.predict(test_data) +1) - (np.log10(test_preds) +1)))))
+   model_preds[model_preds < 0] = 0
+   print("****", model, "********")
+   print("RMSLE: ", np.sqrt((1/n) * sum(np.square(np.log10(model_preds +1) - (np.log10(test_preds) +1)))))
    print("*************")
 '''
 
