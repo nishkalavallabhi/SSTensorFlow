@@ -46,7 +46,7 @@ def checking_columns(numpy_array):
 features_array = [] #2,3,4,5,6,7,8,9
 features_array.extend(range(2,11))
 features_array.extend(range(13,152))
-features_array.extend(range(153,270))
+features_array.extend(range(153,291))
 #features_array.extend([13,15,16,19,22,23,25,31,32])
 #features_array.extend(range(42,106))
 #features_array.extend(range(108,114))
