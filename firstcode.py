@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import linear_model,svm
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 
 input_file = "train.csv"
 
@@ -37,10 +37,8 @@ def checking_columns(numpy_array):
 #Choosing only specific columns instead of everything. 
 features_array = [] #2,3,4,5,6,7,8,9
 features_array.extend(range(2,11))
-features_array.extend([13,15,16,19,22,23,25,31,32])
-features_array.extend(range(42,106))
-features_array.extend(range(108,114))
-features_array.extend(range(120,150))
+features_array.extend(range(13,152))
+features_array.extend(range(153,291))
 features_array.append(291)
 print(features_array)
 
@@ -70,7 +68,8 @@ print(test_data.shape)
 #regr = linear_model.Lasso(alpha = 0.1)
 #regr = svm.SVR()
 #regr = linear_model.BayesianRidge()
-regr = GradientBoostingRegressor()
+#regr = GradientBoostingRegressor()
+regr = RandomForestRegressor()
 regr.fit(train_data,train_preds)
 
 # learned coefficients
